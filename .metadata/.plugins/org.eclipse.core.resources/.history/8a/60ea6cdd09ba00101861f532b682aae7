@@ -1,0 +1,5 @@
+package com.empmanage.demo.repository;
+
+public interface EmployeeRepo {
+
+}

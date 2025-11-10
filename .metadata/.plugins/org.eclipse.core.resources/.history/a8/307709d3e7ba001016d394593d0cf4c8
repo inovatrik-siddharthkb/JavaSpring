@@ -1,0 +1,5 @@
+package com.empmanage.demo.service;
+
+public class CustomUserDetailsService {
+
+}

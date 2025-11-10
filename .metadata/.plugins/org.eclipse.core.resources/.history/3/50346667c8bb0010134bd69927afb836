@@ -1,0 +1,70 @@
+package com.empmanage.demo.controller;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.web.PageableDefault;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.DeleteMapping;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseStatus;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.empmanage.demo.dto.EmployeeDTO;
+import com.empmanage.demo.entity.Employee;
+import com.empmanage.demo.mapper.EmployeeMapper;
+import com.empmanage.demo.repository.EmployeeRepo;
+import jakarta.validation.Valid;
+
+@RestController
+public class EmployeeController 
+{
+	@Autowired
+	EmployeeRepo repo;
+	
+	@Autowired
+	EmployeeMapper mapper;
+	
+	@GetMapping("/employees")
+	public Page<EmployeeDTO> getallEmployees(@PageableDefault(page = 0, size = 5) Pageable pageable)
+	{
+		Page<Employee> employeePage = repo.findAll(pageable);
+		return employeePage.map(mapper::toDo);
+	}
+	
+	@GetMapping("/employees/{id}")
+	public EmployeeDTO getEmployee(@PathVariable int id)
+	{
+		Employee employee = repo.findById(id).get();
+		return mapper.toDto(employee);
+	}
+	
+	@PostMapping("/employees/add")
+	@ResponseStatus(code = HttpStatus.CREATED)
+	public void addEmployee(@Valid @RequestBody EmployeeDTO employeeDto)
+	{
+		Employee employee = mapper.toEntity(employeeDto);
+		repo.save(employee);
+	}
+	
+	@PutMapping("/employees/update/{id}")
+	public EmployeeDTO updateEmployee(@PathVariable int id, @Valid @RequestBody EmployeeDTO employeeDto)
+	{
+		Employee upEmployee = repo.findById(id).get();
+		mapper.updateEntityFtomDto(employeeDto, upEmployee);
+		
+		repo.save(upEmployee);
+		return mapper.toDto(upEmployee);
+	}
+	
+	@DeleteMapping("/employees/delete/{id}")
+	public void delEmployee(@PathVariable int id)
+	{
+		Employee employee = repo.findById(id).get();
+		repo.delete(employee);
+	}
+}

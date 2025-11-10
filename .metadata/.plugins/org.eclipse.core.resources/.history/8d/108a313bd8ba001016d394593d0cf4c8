@@ -1,0 +1,5 @@
+package com.empmanage.demo.config;
+
+public class SecurityConfig {
+
+}

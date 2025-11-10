@@ -1,0 +1,5 @@
+package com.empmanage.demo.entity;
+
+public class Employee {
+
+}

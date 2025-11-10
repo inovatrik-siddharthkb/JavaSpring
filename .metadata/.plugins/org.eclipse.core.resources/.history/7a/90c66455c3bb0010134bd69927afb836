@@ -1,0 +1,5 @@
+package com.empmanage.demo.mapper;
+
+public class EmployeeMapper {
+
+}
