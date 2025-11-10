@@ -20,9 +20,13 @@ import com.empmanage.demo.mapper.EmployeeMapper;
 import com.empmanage.demo.repository.EmployeeRepo;
 import jakarta.validation.Valid;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 @RestController
 public class EmployeeController 
 {
+	private static final Logger logger = LoggerFactory.getLogger(EmployeeController.class);
 	@Autowired
 	EmployeeRepo repo;
 	
@@ -32,6 +36,7 @@ public class EmployeeController
 	@GetMapping("/employees")
 	public Page<EmployeeDTO> getallEmployees(@PageableDefault(page = 0, size = 5) Pageable pageable)
 	{
+		logger.info("Fetching all employees with page: {}, size: {}", pageable.getPageNumber(), pageable.getPageSize());
 		Page<Employee> employeePage = repo.findAll(pageable);
 		return employeePage.map(mapper::toDto);
 	}
