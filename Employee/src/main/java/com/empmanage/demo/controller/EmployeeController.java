@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -19,6 +20,9 @@ import com.empmanage.demo.entity.Employee;
 import com.empmanage.demo.mapper.EmployeeMapper;
 import com.empmanage.demo.repository.EmployeeRepo;
 import jakarta.validation.Valid;
+
+import java.util.List;
+import java.util.stream.Collectors;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,6 +36,17 @@ public class EmployeeController
 	
 	@Autowired
 	EmployeeMapper mapper;
+	
+	@GetMapping("/employees/search")
+	public List<EmployeeDTO> searchEmployees(@RequestParam("keyword") String keyword)
+	{
+		logger.info("Searching employees with keyword: {}", keyword);
+		
+		List<Employee> employees = repo.searchEmployees(keyword);
+		return employees.stream()
+				.map(mapper::toDto)
+				.collect(Collectors.toList());
+	}
 	
 	@GetMapping("/employees")
 	public Page<EmployeeDTO> getallEmployees(@PageableDefault(page = 0, size = 5) Pageable pageable)
